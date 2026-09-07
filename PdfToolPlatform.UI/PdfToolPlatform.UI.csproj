@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>PdfToolPlatform.UI</RootNamespace>
+    <ApplicationIcon></ApplicationIcon>
+
+    <!-- 禁用.NET的自動更新檢查與使用統計回傳,內部工具不對外連線 -->
+    <TelemetryOptOut>true</TelemetryOptOut>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PdfToolPlatform.Core\PdfToolPlatform.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 僅用於原生檔案選取對話框,無網路行為 -->
+    <PackageReference Include="Microsoft.Win32.SystemEvents" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>

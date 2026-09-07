@@ -1,0 +1,30 @@
+@page
+@model PdfToolPlatform.Web.Pages.SplitModel
+
+<div class="card">
+    <h1>分割 PDF</h1>
+    <form method="post" enctype="multipart/form-data">
+        <label>選擇PDF檔案</label>
+        <input type="file" asp-for="File" accept=".pdf" />
+
+        <label>
+            <input type="radio" name="Mode" value="fixed" checked style="width:auto;display:inline-block;" />
+            依固定頁數拆分
+        </label>
+        <input type="number" asp-for="PagesPerFile" min="1" value="1" />
+
+        <label style="margin-top:20px;">
+            <input type="radio" name="Mode" value="range" style="width:auto;display:inline-block;" />
+            依頁碼範圍拆分
+        </label>
+        <input type="text" asp-for="Ranges" placeholder="例如: 1-3,4-10,11-12" />
+        <div class="field-hint">多組範圍以逗號分隔,頁碼從1開始且包含頭尾。</div>
+
+        <button type="submit">分割並下載(ZIP)</button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="error">@Model.ErrorMessage</div>
+    }
+</div>

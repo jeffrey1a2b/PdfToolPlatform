@@ -1,0 +1,27 @@
+@page
+@model PdfToolPlatform.Web.Pages.ToImageModel
+
+<div class="card">
+    <h1>PDF 轉圖檔</h1>
+    <form method="post" enctype="multipart/form-data">
+        <label>選擇PDF檔案</label>
+        <input type="file" asp-for="File" accept=".pdf" />
+
+        <label>解析度 DPI</label>
+        <input type="number" asp-for="Dpi" min="72" />
+        <div class="field-hint">150適合預覽,300適合列印品質(檔案較大)。</div>
+
+        <label>輸出格式</label>
+        <select asp-for="Format">
+            <option value="Png" selected>PNG</option>
+            <option value="Jpeg">JPEG</option>
+        </select>
+
+        <button type="submit">轉換並下載(ZIP)</button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="error">@Model.ErrorMessage</div>
+    }
+</div>

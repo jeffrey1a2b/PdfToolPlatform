@@ -1,0 +1,97 @@
+* { box-sizing: border-box; }
+body {
+    font-family: "Microsoft JhengHei", "Segoe UI", sans-serif;
+    margin: 0;
+    background: #f5f6f8;
+    color: #222;
+}
+header {
+    background: #1f2d3d;
+    color: white;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+header .brand { font-weight: bold; font-size: 18px; }
+header nav a {
+    color: #cdd6e0;
+    text-decoration: none;
+    margin-right: 16px;
+}
+header nav a:hover { color: white; }
+main {
+    max-width: 720px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+.notice {
+    background: #eef3fb;
+    border: 1px solid #c7d7ee;
+    color: #33507a;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+.card {
+    background: white;
+    border-radius: 6px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+h1 { font-size: 22px; margin-top: 0; }
+label { display: block; margin-top: 14px; font-weight: 600; font-size: 14px; }
+input[type=text], input[type=number], select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+input[type=file] { margin-top: 6px; }
+input[type=range] { width: 100%; margin-top: 6px; }
+button {
+    margin-top: 20px;
+    background: #2f6fed;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+button:hover { background: #2559c9; }
+.error {
+    background: #fdecea;
+    border: 1px solid #f5c2c0;
+    color: #a12b23;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 16px;
+}
+.success {
+    background: #eaf7ec;
+    border: 1px solid #bfe3c4;
+    color: #256b32;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 16px;
+}
+.filelist { list-style: none; padding: 0; }
+.filelist li {
+    padding: 6px 10px;
+    background: #f0f2f5;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+footer {
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+    padding: 20px;
+}
+.field-hint { color: #888; font-size: 12px; margin-top: 2px; }

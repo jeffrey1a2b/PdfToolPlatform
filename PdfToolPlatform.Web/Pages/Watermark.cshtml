@@ -1,0 +1,93 @@
+@page
+@model PdfToolPlatform.Web.Pages.WatermarkModel
+
+<div class="card">
+    <h1>加浮水印</h1>
+    <form method="post" enctype="multipart/form-data">
+        <label>選擇PDF檔案</label>
+        <input type="file" name="File" accept=".pdf" />
+        @if (Model.HasStoredFile)
+        {
+            <div class="field-hint">已有暫存的PDF檔案,若只是調整下方參數,不需要重新選擇即可再次預覽。</div>
+        }
+
+        <label>浮水印類型</label>
+        <select asp-for="Type" id="wmType" onchange="toggleWatermarkType()">
+            <option value="Text">文字</option>
+            <option value="Image">圖片(Logo)</option>
+        </select>
+
+        <div id="textSection">
+            <label>文字內容</label>
+            <input type="text" asp-for="Text" />
+        </div>
+
+        <div id="imageSection">
+            <label>浮水印圖片(PNG / JPG,建議使用去背PNG效果較佳)</label>
+            <input type="file" name="WatermarkImageFile" accept="image/*" />
+            @if (Model.HasStoredImage)
+            {
+                <div class="field-hint">已有暫存的圖片,若只是調整參數,不需要重新選擇即可再次預覽。</div>
+            }
+
+            <label>圖片寬度(pt,高度依原圖比例自動計算)</label>
+            <input type="number" asp-for="ImageWidthPoints" min="10" />
+        </div>
+
+        <label>透明度 (0.05 ~ 1.0)</label>
+        <input type="range" asp-for="Opacity" min="0.05" max="1.0" step="0.05" />
+        <div class="field-hint">數值愈小愈透明,建議0.15~0.35之間。目前設定: @Model.Opacity.ToString("0.00")</div>
+
+        <label>旋轉角度(度)</label>
+        <input type="number" asp-for="RotationDegrees" />
+
+        <label>分布方式</label>
+        <select asp-for="Layout">
+            <option value="Center">置中單一</option>
+            <option value="DiagonalSingle">斜角單一</option>
+            <option value="TiledRepeat">滿版平舖</option>
+        </select>
+
+        <label>平舖間距 X / Y(僅滿版平舖模式生效)</label>
+        <div style="display:flex; gap:8px;">
+            <input type="number" asp-for="TileSpacingX" />
+            <input type="number" asp-for="TileSpacingY" />
+        </div>
+
+        <label>起始位置偏移量(pt,以頁面正中央為基準)</label>
+        <div style="display:flex; gap:8px;">
+            <input type="number" asp-for="OffsetXPoints" placeholder="水平(右為正)" />
+            <input type="number" asp-for="OffsetYPoints" placeholder="垂直(下為正)" />
+        </div>
+        <div class="field-hint">例如想貼在右下角,可以把水平/垂直都設成正值;滿版平舖模式下,偏移量會整個網格一起平移(可用來微調對齊)。</div>
+
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button type="submit" asp-page-handler="Preview" style="background:#555;">預覽第一頁</button>
+            <button type="submit" asp-page-handler="Apply">套用並下載</button>
+        </div>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="error">@Model.ErrorMessage</div>
+    }
+</div>
+
+@if (!string.IsNullOrEmpty(Model.PreviewImageBase64))
+{
+    <div class="card">
+        <h1>預覽(第1頁)</h1>
+        <p class="field-hint">僅顯示第一頁的套用效果,實際下載會處理全部頁面。</p>
+        <img src="data:image/png;base64,@Model.PreviewImageBase64"
+             style="max-width:100%; border:1px solid #ddd; border-radius:4px;" alt="浮水印預覽" />
+    </div>
+}
+
+<script>
+    function toggleWatermarkType() {
+        var type = document.getElementById('wmType').value;
+        document.getElementById('textSection').style.display = (type === 'Text') ? 'block' : 'none';
+        document.getElementById('imageSection').style.display = (type === 'Image') ? 'block' : 'none';
+    }
+    document.addEventListener('DOMContentLoaded', toggleWatermarkType);
+</script>

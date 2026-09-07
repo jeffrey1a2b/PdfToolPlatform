@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>PdfToolPlatform.Core</RootNamespace>
+
+    <!-- 內部工具要求:完全禁止任何遙測/自動更新檢查行為 -->
+    <TelemetryOptOut>true</TelemetryOptOut>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- PDFsharp-GDI:MIT授權,完全開源,合併/分割/浮水印用它,不依賴外部服務 -->
+    <PackageReference Include="PDFsharp" Version="6.1.1" />
+    <!-- Docnet.Core:包裝 PDFium(Google的PDF渲染引擎),BSD/Apache授權,離線渲染PDF轉圖檔 -->
+    <PackageReference Include="Docnet.Core" Version="2.6.0" />
+    <!-- SixLabors.ImageSharp:MIT授權,用來把渲染出的原始像素存成PNG/JPG -->
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 讓測試專案能直接對internal的TrueTypeCollectionExtractor寫單元測試 -->
+    <InternalsVisibleTo Include="PdfToolPlatform.Tests" />
+  </ItemGroup>
+
+</Project>

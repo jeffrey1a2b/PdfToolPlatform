@@ -1,0 +1,56 @@
+@page
+@model PdfToolPlatform.Web.Pages.MergeModel
+
+<div class="card">
+    <h1>合併 PDF</h1>
+    <p class="field-hint">可以分好幾次加入檔案,加入後能刪除或調整順序,最後再一次合併下載。</p>
+
+    <form method="post" asp-page-handler="Add" enctype="multipart/form-data">
+        <label>加入PDF檔案(可一次選多個,也可以分次加入)</label>
+        <input type="file" name="newFiles" multiple accept=".pdf" />
+        <button type="submit">加入工作區</button>
+    </form>
+
+    @if (TempData["Notice"] is string notice)
+    {
+        <div class="success">@notice</div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="error">@Model.ErrorMessage</div>
+    }
+</div>
+
+@if (Model.Entries.Count > 0)
+{
+    <div class="card">
+        <h1>目前工作區(@Model.Entries.Count 個檔案)</h1>
+        <p class="field-hint">合併時會依照下列順序,由上到下依序合併。</p>
+
+        <form method="post">
+            <ul class="filelist">
+                @for (int i = 0; i < Model.Entries.Count; i++)
+                {
+                    var entry = Model.Entries[i];
+                    <li style="display:flex; align-items:center; justify-content:space-between;">
+                        <span>@(i + 1). @entry.OriginalName</span>
+                        <span style="white-space:nowrap;">
+                            <button type="submit" asp-page-handler="MoveUp" name="id" value="@entry.Id"
+                                    style="margin-top:0;" title="上移">↑</button>
+                            <button type="submit" asp-page-handler="MoveDown" name="id" value="@entry.Id"
+                                    style="margin-top:0;" title="下移">↓</button>
+                            <button type="submit" asp-page-handler="Remove" name="id" value="@entry.Id"
+                                    style="margin-top:0; background:#c0392b;" title="移除">刪除</button>
+                        </span>
+                    </li>
+                }
+            </ul>
+
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button type="submit" asp-page-handler="Merge">合併並下載</button>
+                <button type="submit" asp-page-handler="Clear" style="background:#888;"
+                        onclick="return confirm('確定要清空整個工作區嗎?');">清空重新開始</button>
+            </div>
+        </form>
+    </div>
+}

@@ -1,0 +1,29 @@
+# 建置輸出(每次build/publish都會重新產生,不需要進版控)
+bin/
+obj/
+publish/
+out/
+
+# Visual Studio使用者/工作環境設定(因人而異,不該共用)
+.vs/
+*.user
+*.suo
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# NuGet套件快取
+*.nupkg
+packages/
+
+# 測試結果
+TestResults/
+
+# 本機環境設定(如果之後有機密資訊,例如自訂連線字串,建議另外用
+# appsettings.Development.json 或環境變數管理,不要進版控)
+appsettings.*.local.json
+
+# 作業系統產生的雜項檔案
+.DS_Store
+Thumbs.db

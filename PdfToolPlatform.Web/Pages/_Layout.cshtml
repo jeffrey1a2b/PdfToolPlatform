@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF工具平台(內部使用)</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <div class="brand">PDF工具平台(內部使用)</div>
+        <nav>
+            <a asp-page="/Index">首頁</a>
+            <a asp-page="/Merge">合併</a>
+            <a asp-page="/Split">分割</a>
+            <a asp-page="/Watermark">浮水印</a>
+            <a asp-page="/ToImage">轉圖檔</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="notice">所有檔案處理均在公司內網主機上完成,不會上傳到任何外部雲端服務。</div>
+        @RenderBody()
+    </main>
+
+    <footer>內部工具 / 僅供公司內網使用</footer>
+</body>
+</html>

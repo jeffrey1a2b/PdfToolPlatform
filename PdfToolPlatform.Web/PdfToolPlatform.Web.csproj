@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>PdfToolPlatform.Web</RootNamespace>
+
+    <!-- 內部工具,關閉遙測回傳 -->
+    <TelemetryOptOut>true</TelemetryOptOut>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PdfToolPlatform.Core\PdfToolPlatform.Core.csproj" />
+  </ItemGroup>
+
+</Project>
