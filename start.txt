@@ -1,0 +1,14 @@
+@echo off
+REM ====================================================
+REM PDF工具平台(Web版) - 開機自動啟動批次檔
+REM 搭配Windows工作排程器使用,開機時自動常駐執行
+REM ====================================================
+
+REM 切換到發布資料夾(如果路徑不同,請修改這一行)
+cd /d "C:\PdfToolPlatform\publish"
+
+REM 記錄啟動時間到log檔,方便之後確認服務是否有正常啟動過
+echo %date% %time% - 服務啟動 >> "C:\PdfToolPlatform\startup.log"
+
+REM 啟動服務(這個視窗會保持執行,不會自動關閉)
+dotnet PdfToolPlatform.Web.dll

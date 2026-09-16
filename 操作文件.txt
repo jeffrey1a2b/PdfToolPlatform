@@ -1,0 +1,132 @@
+dotnet PdfToolPlatform.Web.dll
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://0.0.0.0:5080
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Production
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: C:\PdfToolPlatform\publish
+
+====================================================
+PDF工具平台(Web版) - Windows 11 主機部署步驟
+====================================================
+
+【前置需求】
+- Windows 11 主機
+- 已下載最新版 PdfToolPlatform.zip
+
+----------------------------------------------------
+步驟1:安裝 .NET 8 SDK
+----------------------------------------------------
+1. 前往 https://dotnet.microsoft.com/download/dotnet/8.0
+2. 下載「.NET 8 SDK」的 Windows x64 安裝檔並執行安裝
+3. 安裝完成後,開啟 PowerShell 輸入:
+     dotnet --version
+   能看到 8.x 的版本號即代表成功
+※ 若之前已安裝過,此步驟可跳過
+
+
+----------------------------------------------------
+步驟2:解壓縮專案
+----------------------------------------------------
+1. 將 PdfToolPlatform.zip 解壓縮到主機固定位置,例如:
+     C:\PdfToolPlatform\src
+2. 【更新部署時】請先刪除或改名備份舊的 src 資料夾,
+   再解壓縮新版進去,避免新舊檔案混雜
+
+
+----------------------------------------------------
+步驟3:還原套件並發布
+----------------------------------------------------
+在 PowerShell 切換到解壓縮後的資料夾,依序執行以下指令
+(每行各自按Enter送出,不可黏成一行執行):
+
+     cd C:\PdfToolPlatform\src\PdfToolPlatform
+     dotnet restore
+
+等上面這行跑完、確認沒有錯誤訊息後,再執行:
+
+     dotnet publish PdfToolPlatform.Web -c Release -o C:\PdfToolPlatform\publish
+
+完成後,C:\PdfToolPlatform\publish 資料夾內會產生(或覆蓋)
+PdfToolPlatform.Web.dll
+
+※ dotnet restore 需要能連上公開NuGet來源下載套件,
+   這是唯一需要對外連線的步驟,執行期完全不連網
+
+
+----------------------------------------------------
+步驟4:查詢主機內網IP
+----------------------------------------------------
+1. 在 PowerShell 輸入:
+     ipconfig
+2. 找到「乙太網路卡」或「Wi-Fi」底下的「IPv4 位址」並記下
+   (例如 192.168.100.10)
+※ 若主機IP未變更,此步驟可跳過
+
+
+----------------------------------------------------
+步驟5:設定/確認 Windows 防火牆規則
+----------------------------------------------------
+【首次部署】以系統管理員身分開啟PowerShell,執行:
+
+     New-NetFirewallRule -DisplayName "PdfToolPlatform-Internal" `
+       -Direction Inbound -LocalPort 5080 -Protocol TCP `
+       -RemoteAddress 192.168.100.0/24 -Action Allow
+
+  將 192.168.100.0/24 換成公司實際內網網段
+
+【更新部署】確認規則是否已存在,執行:
+
+     Get-NetFirewallRule -DisplayName "PdfToolPlatform-Internal"
+
+  有輸出結果即代表規則存在,不需重新建立
+
+
+----------------------------------------------------
+步驟6:啟動 / 重新啟動服務
+----------------------------------------------------
+1. 若舊版本仍在執行中,回到該PowerShell視窗按 Ctrl+C 停止
+2. 執行:
+     cd C:\PdfToolPlatform\publish
+     dotnet PdfToolPlatform.Web.dll
+3. 看到以下訊息即代表啟動成功:
+     Now listening on: http://0.0.0.0:5080
+4. 此視窗須保持開啟,關閉視窗服務即停止
+   (如需背景常駐執行,請參考下方「選用」項目)
+
+
+----------------------------------------------------
+步驟7:從其他內網電腦測試連線
+----------------------------------------------------
+在同事電腦的瀏覽器輸入:
+     http://<主機IP>:5080
+
+例如:http://192.168.100.10:5080
+
+應能看到PDF工具平台首頁。若連不上,請確認:
+- 主機防火牆規則是否正確
+- 該電腦與主機是否在同一內網網段
+
+----------------------------------------------------
+【選用】設定開機自動啟動 / 背景常駐
+----------------------------------------------------
+方式一:工作排程器
+  設定「開機時執行」的工作,動作指向:
+     程式: dotnet.exe
+     參數: C:\PdfToolPlatform\publish\PdfToolPlatform.Web.dll
+  並勾選「不管使用者是否登入均執行」
+
+方式二:註冊為 Windows 服務(建議常駐使用)
+  使用 NSSM (https://nssm.cc/) 將其註冊為正式Windows服務,
+  可透過「服務」管理介面啟動/停止,主機重開機自動啟動
+
+====================================================
+注意事項
+====================================================
+1. http://0.0.0.0:5080 會監聽主機所有網卡,若主機同時有
+   VPN或對外網卡,務必確認防火牆規則已限制在內網網段內
+2. 上傳檔案處理完成後會自動從主機刪除,不會留存
+3. 合併功能的暫存工作區綁定瀏覽器Session,30分鐘無操作
+   會過期;逾時的殘留檔案由背景清理服務於1小時後自動清除
