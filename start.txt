@@ -1,14 +1,76 @@
 @echo off
+chcp 65001 >nul
+setlocal
+
 REM ====================================================
-REM PDF工具平台(Web版) - 開機自動啟動批次檔
-REM 搭配Windows工作排程器使用,開機時自動常駐執行
+REM PDF工具平台 - 互動式啟動選單
+REM 用法:把新版解壓縮蓋到 src 資料夾後,直接執行這支批次檔即可
 REM ====================================================
 
-REM 切換到發布資料夾(如果路徑不同,請修改這一行)
-cd /d "C:\PdfToolPlatform\publish"
+REM 如果你的路徑跟這裡不一樣,請修改以下三行
+set "ROOT=C:\PdfToolPlatform"
+set "SRC=%ROOT%\src\PdfToolPlatform"
+set "PUBLISH=%ROOT%\publish"
 
-REM 記錄啟動時間到log檔,方便之後確認服務是否有正常啟動過
-echo %date% %time% - 服務啟動 >> "C:\PdfToolPlatform\startup.log"
+echo ====================================================
+echo   PDF工具平台 - 啟動選單
+echo ====================================================
+echo.
+echo   [1] 直接執行(使用目前已經Publish好的版本,較快)
+echo   [2] 重新Publish後再執行(src裡有新版程式碼時選這個)
+echo.
 
-REM 啟動服務(這個視窗會保持執行,不會自動關閉)
+choice /c 12 /n /m "請選擇 (按 1 或 2): "
+
+if errorlevel 2 goto :publish_and_run
+if errorlevel 1 goto :run_only
+
+:publish_and_run
+echo.
+echo [1/3] 還原套件中...
+cd /d "%SRC%"
+dotnet restore
+if errorlevel 1 (
+    echo.
+    echo [錯誤] 還原套件失敗,請檢查上方錯誤訊息。
+    pause
+    exit /b 1
+)
+
+echo.
+echo [2/3] 發布中...
+dotnet publish PdfToolPlatform.Web -c Release -o "%PUBLISH%"
+if errorlevel 1 (
+    echo.
+    echo [錯誤] 發布失敗,請檢查上方錯誤訊息。
+    pause
+    exit /b 1
+)
+
+echo.
+echo [3/3] 發布完成,準備啟動服務...
+goto :run_only
+
+:run_only
+if not exist "%PUBLISH%\PdfToolPlatform.Web.dll" (
+    echo.
+    echo [錯誤] 找不到 %PUBLISH%\PdfToolPlatform.Web.dll
+    echo 請先選擇選項2進行Publish,或確認上方路徑設定是否正確。
+    pause
+    exit /b 1
+)
+
+cd /d "%PUBLISH%"
+echo %date% %time% - 服務啟動 >> "%ROOT%\startup.log"
+
+echo.
+echo ====================================================
+echo   服務啟動中,同事可連線 http://主機IP:5080
+echo   這個視窗需要保持開啟,關閉視窗服務會停止
+echo   按 Ctrl+C 可停止服務
+echo ====================================================
+echo.
+
 dotnet PdfToolPlatform.Web.dll
+
+endlocal
